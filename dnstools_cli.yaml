@@ -1,0 +1,67 @@
+# program name, name for the executable
+ProgramName: dnstools
+
+PackageName: main
+
+Name: dnstools
+Desc: "DNS Tools"
+Text: Tool for DNS inquiry
+#NumOption: cli.AtLeast(1)
+NumArg: cli.AtLeast(1)
+Global: true
+# this (Self) means that root option is using the self-config .json file
+#Self: true
+
+#UsageLead: "Usage:\\n  dnstools [Options] dir [dirs...]"
+
+Options:
+
+  - Name: DNSServer
+    Type: string
+    Flag: H,host
+    Usage: dns server IP addr
+
+  - Name: Port
+    Type: string
+    Flag: p,port
+    Usage: dns server port
+    Value: 53
+
+  - Name: Retrys
+    Type: int
+    Flag: retry
+    Usage: retry this many times when dns query times out
+    Value: 2
+
+  - Name: Verbose
+    Type: cli.Counter
+    Flag: v,verbose
+    Usage: verbose mode (multiple -v options increase the verbosity.)
+
+Command:
+
+  - Name: resolve
+    Desc: Resolve from given domain list to IP
+    Text: 'Usage:\n  dnstools resolve -i [/TMP/LISTF]'
+    #NumArg: cli.AtLeast(1)
+    NumOption: cli.AtLeast(1)
+
+    Options:
+      - Name: Filei
+        Type: '*clix.Reader'
+        Flag: '*i,input'
+        Usage: domain list file (mandatory, read stdin if no file given)
+
+  - Name: probe
+    Desc: Probe the given domain set to IP
+    Text: 'Usage:\n  dnstools probe DOMAIN_SET'
+    NumArg: cli.AtLeast(1)
+    #NumOption: cli.AtLeast(1)
+
+    Options:
+      - Name: Stop
+        Type: int
+        Flag: stop
+        Usage: stop probing after this many errors
+        Value: 3
+
