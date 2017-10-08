@@ -58,8 +58,10 @@ func NewFromResolvConf(path string) *DnsResolver {
 func (r *DnsResolver) Lookup(host string) error {
 	IPs, err := r.LookupHost(host)
 	if err != nil {
+		if r.NxDomainErr && err.Error() == "NXDOMAIN" {
+			return err
+		}
 		warning(host + ": " + err.Error())
-		// return err
 	}
 	fmt.Printf("%s\t", host)
 	for _, ip := range IPs {

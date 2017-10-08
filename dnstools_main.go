@@ -26,6 +26,8 @@ type OptsT struct {
 	Port      string
 	Retires   int
 	Verbose   int
+
+	NxDomainErr bool // whether NXDOMAIN considered error
 }
 
 ////////////////////////////////////////////////////////////////////////////
