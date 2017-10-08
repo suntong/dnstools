@@ -7,7 +7,8 @@
 package main
 
 import (
-	"fmt"
+	"bufio"
+	"io"
 
 	"github.com/mkideal/cli"
 )
@@ -18,8 +19,18 @@ import (
 func resolveCLI(ctx *cli.Context) error {
 	rootArgv = ctx.RootArgv().(*rootT)
 	argv := ctx.Argv().(*resolveT)
-	fmt.Printf("[resolve]:\n  %+v\n  %+v\n  %v\n", rootArgv, argv, ctx.Args())
+	// fmt.Printf("[resolve]:\n  %+v\n  %+v\n  %v\n", rootArgv, argv, ctx.Args())
 	Opts.DNSServer, Opts.Port, Opts.Retires, Opts.Verbose =
 		rootArgv.DNSServer, rootArgv.Port, rootArgv.Retires, rootArgv.Verbose.Value()
-	return nil
+	return cmdResolve(argv.Filei)
+}
+
+func cmdResolve(cin io.Reader) error {
+	r := NewDnsResolver()
+	// read cin line by line
+	scanner := bufio.NewScanner(cin)
+	for scanner.Scan() {
+		r.Lookup(scanner.Text())
+	}
+	return scanner.Err()
 }
