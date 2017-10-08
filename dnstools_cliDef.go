@@ -21,7 +21,7 @@ type rootT struct {
 	cli.Helper
 	DNSServer string      `cli:"H,host" usage:"dns server IP addr"`
 	Port      string      `cli:"p,port" usage:"dns server port" dft:"53"`
-	Retrys    int         `cli:"retry" usage:"retry this many times when dns query times out" dft:"2"`
+	Retires   int         `cli:"retry" usage:"retry this many times when dns query times out" dft:"2"`
 	Verbose   cli.Counter `cli:"v,verbose" usage:"verbose mode (multiple -v options increase the verbosity.)"`
 }
 
@@ -44,7 +44,7 @@ var root = &cli.Command{
 //  type OptsT struct {
 //  	DNSServer	string
 //  	Port	string
-//  	Retrys	int
+//  	Retires	int
 //  	Verbose	cli.Counter
 //  	Verbose int
 //  }
@@ -99,8 +99,8 @@ var root = &cli.Command{
 //  	rootArgv = ctx.RootArgv().(*rootT)
 //  	argv := ctx.Argv().(*resolveT)
 //  	fmt.Printf("[resolve]:\n  %+v\n  %+v\n  %v\n", rootArgv, argv, ctx.Args())
-//  	Opts.DNSServer, Opts.Port, Opts.Retrys, Opts.Verbose, Opts.Verbose =
-//  		rootArgv.DNSServer, rootArgv.Port, rootArgv.Retrys, rootArgv.Verbose, rootArgv.Verbose.Value()
+//  	Opts.DNSServer, Opts.Port, Opts.Retires, Opts.Verbose, Opts.Verbose =
+//  		rootArgv.DNSServer, rootArgv.Port, rootArgv.Retires, rootArgv.Verbose, rootArgv.Verbose.Value()
 //  	return nil
 //  }
 
@@ -125,8 +125,8 @@ var resolveDef = &cli.Command{
 //  	rootArgv = ctx.RootArgv().(*rootT)
 //  	argv := ctx.Argv().(*probeT)
 //  	fmt.Printf("[probe]:\n  %+v\n  %+v\n  %v\n", rootArgv, argv, ctx.Args())
-//  	Opts.DNSServer, Opts.Port, Opts.Retrys, Opts.Verbose, Opts.Verbose =
-//  		rootArgv.DNSServer, rootArgv.Port, rootArgv.Retrys, rootArgv.Verbose, rootArgv.Verbose.Value()
+//  	Opts.DNSServer, Opts.Port, Opts.Retires, Opts.Verbose, Opts.Verbose =
+//  		rootArgv.DNSServer, rootArgv.Port, rootArgv.Retires, rootArgv.Verbose, rootArgv.Verbose.Value()
 //  	return nil
 //  }
 

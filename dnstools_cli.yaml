@@ -27,7 +27,7 @@ Options:
     Usage: dns server port
     Value: 53
 
-  - Name: Retrys
+  - Name: Retires
     Type: int
     Flag: retry
     Usage: retry this many times when dns query times out

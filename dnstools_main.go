@@ -24,7 +24,7 @@ import (
 type OptsT struct {
 	DNSServer string
 	Port      string
-	Retrys    int
+	Retires   int
 	Verbose   int
 }
 
