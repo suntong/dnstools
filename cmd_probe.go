@@ -19,7 +19,9 @@ func probeCLI(ctx *cli.Context) error {
 	rootArgv = ctx.RootArgv().(*rootT)
 	argv := ctx.Argv().(*probeT)
 	fmt.Printf("[probe]:\n  %+v\n  %+v\n  %v\n", rootArgv, argv, ctx.Args())
-	Opts.DNSServer, Opts.Port, Opts.Retrys, Opts.Verbose =
-		rootArgv.DNSServer, rootArgv.Port, rootArgv.Retrys, rootArgv.Verbose.Value()
+	Opts.DNSServer, Opts.Port, Opts.Retires, Opts.Verbose =
+		rootArgv.DNSServer, rootArgv.Port, rootArgv.Retires, rootArgv.Verbose.Value()
+	r := NewDnsResolver()
+	r.Lookup(ctx.Args()[0])
 	return nil
 }
