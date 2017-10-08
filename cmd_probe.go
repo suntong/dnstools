@@ -22,6 +22,12 @@ func probeCLI(ctx *cli.Context) error {
 	Opts.DNSServer, Opts.Port, Opts.Retires, Opts.Verbose =
 		rootArgv.DNSServer, rootArgv.Port, rootArgv.Retires, rootArgv.Verbose.Value()
 
+	// g := NewURLGlob("site.{one,two,three}[1-100]-{one,two,three}[2-20].com")
+	g := NewURLGlob(ctx.Args()[0])
+	g.Parse()
+	fmt.Println(g.urlGlob)
+	return nil
+
 	Opts.NxDomainErr = true
 	r := NewDnsResolver()
 	r.Lookup(ctx.Args()[0])
