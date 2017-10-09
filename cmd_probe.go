@@ -8,6 +8,7 @@ package main
 
 import (
 	"github.com/mkideal/cli"
+	"github.com/suntong/curlurl"
 )
 
 ////////////////////////////////////////////////////////////////////////////
@@ -27,7 +28,7 @@ func probeCLI(ctx *cli.Context) error {
 func cmdProbe(hosts []string) error {
 	r := NewDnsResolver()
 	for _, hp := range hosts {
-		g := NewURLGlob(hp).Parse() // parse the host parameters
+		g := curlurl.NewURLGlob(hp).Parse(abortOn) // parse the host parameters
 		for _, h := range g.GetURLs(0) {
 			// print(h, "\n")
 			r.Lookup(h)
