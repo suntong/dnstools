@@ -27,6 +27,9 @@ type OptsT struct {
 	Retires   int
 	Verbose   int
 
+	// for cdmProbe
+	Stop int
+
 	NxDomainErr bool // whether NXDOMAIN considered error
 }
 
