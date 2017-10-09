@@ -57,8 +57,7 @@ func ExampleURLGlob_getURLs_output() {
 
 func getURLsTest(hostn string) {
 	fmt.Printf("-\n%s\n", hostn)
-	g := NewURLGlob(hostn)
-	g.Parse()
+	g := NewURLGlob(hostn).Parse()
 	fmt.Println(g.urlGlob)
 	fmt.Println(g.GetURLs(0))
 }

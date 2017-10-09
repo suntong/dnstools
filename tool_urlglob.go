@@ -71,14 +71,14 @@ func Prefix(in []string, prefix string) (ret []string) {
 }
 
 // Parse will parse URL into urlGlob
-func (g *URLGlob) Parse() {
+func (g *URLGlob) Parse() *URLGlob {
 	// https://play.golang.org/p/KEiq7__4Ce
 	indices := reURLGlob.FindAllStringSubmatchIndex(g.URL, -1)
 	if len(indices) == 0 {
 		// no glob, return whole string as single entry
 		g.urlGlob = []URLPattern{
 			URLPattern{ptype: URLPlain, pattern: []string{g.URL}}}
-		return
+		return g
 	}
 	// ii is char pointer into g.URL; jj is index of slice indices
 	ii, jj := 0, 0
@@ -122,6 +122,7 @@ func (g *URLGlob) Parse() {
 		up.pattern = []string{g.URL[ii:]}
 		g.urlGlob = append(g.urlGlob, up)
 	}
+	return g
 }
 
 // GlobRange handles range expression globing

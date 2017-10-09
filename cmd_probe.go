@@ -7,8 +7,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/mkideal/cli"
 )
 
@@ -22,17 +20,18 @@ func probeCLI(ctx *cli.Context) error {
 	Opts.DNSServer, Opts.Port, Opts.Retires, Opts.Verbose =
 		rootArgv.DNSServer, rootArgv.Port, rootArgv.Retires, rootArgv.Verbose.Value()
 	Opts.Stop = argv.Stop
-
-	// g := NewURLGlob("site.{one,two,three}[1-100]-{one,two,three}[2-20].com")
-	g := NewURLGlob(ctx.Args()[0])
-	g.Parse()
-	fmt.Println(g.urlGlob)
-	fmt.Println(g.GetURLs(0))
-	return nil
-
 	Opts.NxDomainErr = true
-	r := NewDnsResolver()
-	r.Lookup(ctx.Args()[0])
+	return cmdProbe(ctx.Args())
+}
 
+func cmdProbe(hosts []string) error {
+	r := NewDnsResolver()
+	for _, hp := range hosts {
+		g := NewURLGlob(hp).Parse() // parse the host parameters
+		for _, h := range g.GetURLs(0) {
+			// print(h, "\n")
+			r.Lookup(h)
+		}
+	}
 	return nil
 }
