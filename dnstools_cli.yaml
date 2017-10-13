@@ -59,6 +59,12 @@ Command:
     #NumOption: cli.AtLeast(1)
 
     Options:
+
+      - Name: Raw
+        Type: bool
+        Flag: raw
+        Usage: output raw domain set globing result without IP
+
       - Name: Stop
         Type: int
         Flag: stop

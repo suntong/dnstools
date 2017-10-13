@@ -55,7 +55,7 @@ var root = &cli.Command{
 //  var (
 //          progname  = "dnstools"
 //          version   = "0.1.0"
-//          date = "2017-10-07"
+//          date = "2017-10-12"
 
 //  	rootArgv *rootT
 //  	// Opts store all the configurable options
@@ -131,7 +131,8 @@ var resolveDef = &cli.Command{
 //  }
 
 type probeT struct {
-	Stop int `cli:"stop" usage:"stop probing after this many errors" dft:"3"`
+	Raw  bool `cli:"raw" usage:"output raw domain set globing result without IP"`
+	Stop int  `cli:"stop" usage:"stop probing after this many errors" dft:"3"`
 }
 
 var probeDef = &cli.Command{

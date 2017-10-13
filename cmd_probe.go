@@ -7,6 +7,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/mkideal/cli"
 	"github.com/suntong/curlurl"
 )
@@ -22,16 +24,19 @@ func probeCLI(ctx *cli.Context) error {
 		rootArgv.DNSServer, rootArgv.Port, rootArgv.Retires, rootArgv.Verbose.Value()
 	Opts.Stop = argv.Stop
 	Opts.NxDomainErr = true
-	return cmdProbe(ctx.Args())
+	return cmdProbe(ctx.Args(), argv.Raw)
 }
 
-func cmdProbe(hosts []string) error {
+func cmdProbe(hosts []string, raw bool) error {
 	r := NewDnsResolver()
 	for _, hp := range hosts {
 		g := curlurl.NewURLGlob(hp).Parse(abortOn) // parse the host parameters
 		for _, h := range g.GetURLs(0) {
-			// print(h, "\n")
-			r.Lookup(h)
+			if raw {
+				fmt.Println(h)
+			} else {
+				r.Lookup(h)
+			}
 		}
 	}
 	return nil
