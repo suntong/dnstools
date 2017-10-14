@@ -70,10 +70,11 @@ func (r *DnsResolver) Lookup(host string) error {
 	if !r.Dig {
 		fmt.Printf("%s\t", host)
 	}
+	ips := []string{}
 	for _, ip := range IPs {
-		fmt.Printf("%s ", ip)
+		ips = append(ips, ip.String())
 	}
-	fmt.Println()
+	fmt.Println(strings.Join(ips, " "))
 	return nil
 }
 
