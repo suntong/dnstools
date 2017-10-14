@@ -65,6 +65,11 @@ Command:
         Flag: raw
         Usage: output raw domain set globing result without IP
 
+      - Name: Dig
+        Type: bool
+        Flag: dig
+        Usage: dig mode, output only IP without domain name
+
       - Name: Stop
         Type: int
         Flag: stop

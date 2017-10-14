@@ -26,7 +26,7 @@ func resolveCLI(ctx *cli.Context) error {
 }
 
 func cmdResolve(cin io.Reader) error {
-	r := NewDnsResolver()
+	r := NewDnsResolver(false)
 	// read cin line by line
 	scanner := bufio.NewScanner(cin)
 	for scanner.Scan() {

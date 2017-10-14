@@ -25,20 +25,23 @@ import (
 // DnsResolver represents a dns resolver
 type DnsResolver struct {
 	OptsT
+	Dig bool // dig mode, output only IP
 }
 
 // NewDnsResolver initializes DnsResolver at high level.
-func NewDnsResolver() *DnsResolver {
+func NewDnsResolver(dig bool) (r *DnsResolver) {
 	if Opts.DNSServer == "" {
-		return NewFromResolvConf("/etc/resolv.conf")
+		r = NewFromResolvConf("/etc/resolv.conf")
 	} else {
-		return New()
+		r = New()
 	}
+	r.Dig = dig
+	return
 }
 
 // New initializes DnsResolver.
 func New() *DnsResolver {
-	return &DnsResolver{Opts}
+	return &DnsResolver{OptsT: Opts}
 }
 
 // NewFromResolvConf initializes DnsResolver from resolv.conf like file.
@@ -58,12 +61,15 @@ func NewFromResolvConf(path string) *DnsResolver {
 func (r *DnsResolver) Lookup(host string) error {
 	IPs, err := r.LookupHost(host)
 	if err != nil {
+		// NxDomainErr==true when NXDOMAIN considered error
 		if r.NxDomainErr && err.Error() == "NXDOMAIN" {
 			return err
 		}
 		warning(host + ": " + err.Error())
 	}
-	fmt.Printf("%s\t", host)
+	if !r.Dig {
+		fmt.Printf("%s\t", host)
+	}
 	for _, ip := range IPs {
 		fmt.Printf("%s ", ip)
 	}
