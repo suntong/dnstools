@@ -9,7 +9,10 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
+	"time"
 
+	"github.com/cloverstd/tcping/ping"
 	"github.com/mkideal/cli"
 	"github.com/mkideal/cli/clis"
 )
@@ -24,14 +27,56 @@ func tcpingCLI(ctx *cli.Context) error {
 	clis.Verbose(2, "<%s> -\n  %+v\n  %+v\n  %v\n", ctx.Path(), rootArgv, argv, ctx.Args())
 	Opts.DNSServer, Opts.Port, Opts.Retires, Opts.Verbose =
 		rootArgv.DNSServer, rootArgv.Port, rootArgv.Retires, rootArgv.Verbose.Value()
+
+	timeoutDuration, err := time.ParseDuration(argv.Timeout)
+	clis.AbortOn("Parsing Timeout", err)
+	intervalDuration, err := time.ParseDuration(argv.Interval)
+	clis.AbortOn("Parsing Interval", err)
+
+	args := ctx.Args()
+	host := args[0]
+	port := 80
+	if len(args) == 2 {
+		port, err = strconv.Atoi(args[1])
+		clis.AbortOn("Port should be integer", err)
+	}
+
+	schema := ping.TCP.String()
+	clis.Verbose(2, "Schema: %s\n", schema)
+	protocol, _ := ping.NewProtocol(schema)
+
+	target := ping.Target{
+		Timeout:  timeoutDuration,
+		Interval: intervalDuration,
+		Host:     host,
+		Port:     port,
+		Counter:  argv.Counter,
+		Protocol: protocol,
+	}
+
 	//return nil
-	return DoTcping()
+	return DoTcping(target)
 }
 
 //
 // DoTcping implements the business logic of command `tcping`
-func DoTcping() error {
+func DoTcping(target ping.Target) error {
 	fmt.Fprintf(os.Stderr, "%s v%s. tcping - Ping over tcp\n", progname, version)
 	fmt.Fprintln(os.Stderr, "Copyright (C) 2019, Tong Sun\n")
+
+	pinger := ping.NewTCPing()
+	pinger.SetTarget(&target)
+	pingerDone := pinger.Start()
+
+	var sigs chan os.Signal
+	select {
+	case <-pingerDone:
+		break
+	case <-sigs:
+		break
+	}
+
+	fmt.Println(pinger.Result())
+
 	return nil
 }
