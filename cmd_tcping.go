@@ -63,7 +63,7 @@ func tcpingCLI(ctx *cli.Context) error {
 // DoTcping implements the business logic of command `tcping`
 func DoTcping(target ping.Target) error {
 	fmt.Fprintf(os.Stderr, "%s v%s. tcping - Ping over tcp\n", progname, version)
-	fmt.Fprintln(os.Stderr, "Copyright (C) 2019, Tong Sun\n")
+	fmt.Fprintf(os.Stderr, "Copyright (C) 2019, Tong Sun\n\n")
 
 	pinger := ping.NewTCPing()
 	pinger.SetTarget(&target)
