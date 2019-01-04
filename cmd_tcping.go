@@ -7,6 +7,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -76,7 +77,12 @@ func DoTcping(target ping.Target) error {
 		break
 	}
 
-	fmt.Println(pinger.Result())
+	r := pinger.Result()
+	clis.Verbose(1, "%s", r)
+
+	if r.SuccessCounter == 0 {
+		return errors.New("Ping failed: Host down")
+	}
 
 	return nil
 }
