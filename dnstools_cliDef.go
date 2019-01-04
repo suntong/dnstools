@@ -1,13 +1,17 @@
 ////////////////////////////////////////////////////////////////////////////
 // Program: dnstools
 // Purpose: DNS Tools
-// Authors: Tong Sun (c) 2017, All rights reserved
+// Authors: Tong Sun (c) 2019, All rights reserved
 ////////////////////////////////////////////////////////////////////////////
 
 package main
 
 import (
+	//  	"fmt"
+	//  	"os"
+
 	"github.com/mkideal/cli"
+	//  	"github.com/mkideal/cli/clis"
 	clix "github.com/mkideal/cli/ext"
 )
 
@@ -55,7 +59,7 @@ var root = &cli.Command{
 //  var (
 //          progname  = "dnstools"
 //          version   = "0.1.0"
-//          date = "2017-10-13"
+//          date = "2019-01-03"
 
 //  	rootArgv *rootT
 //  	// Opts store all the configurable options
@@ -67,12 +71,13 @@ var root = &cli.Command{
 
 // Function main
 //  func main() {
-//  	cli.SetUsageStyle(cli.ManualStyle) // up-down, for left-right, use NormalStyle
+//  	cli.SetUsageStyle(cli.DenseNormalStyle) // left-right, for up-down, use ManualStyle
 //  	//NOTE: You can set any writer implements io.Writer
 //  	// default writer is os.Stdout
 //  	if err := cli.Root(root,
 //  		cli.Tree(resolveDef),
-//  		cli.Tree(probeDef)).Run(os.Args[1:]); err != nil {
+//  		cli.Tree(probeDef),
+//  		cli.Tree(tcpingDef)).Run(os.Args[1:]); err != nil {
 //  		fmt.Fprintln(os.Stderr, err)
 //  	}
 //  	fmt.Println("")
@@ -80,7 +85,7 @@ var root = &cli.Command{
 
 // Template for main dispatcher starts here
 //==========================================================================
-// Main dispatcher
+// Dumb root handler
 
 //  func dnstools(ctx *cli.Context) error {
 //  	ctx.JSON(ctx.RootArgv())
@@ -98,9 +103,18 @@ var root = &cli.Command{
 //  func resolveCLI(ctx *cli.Context) error {
 //  	rootArgv = ctx.RootArgv().(*rootT)
 //  	argv := ctx.Argv().(*resolveT)
-//  	fmt.Printf("[resolve]:\n  %+v\n  %+v\n  %v\n", rootArgv, argv, ctx.Args())
+//  	clis.Setup(progname, rootArgv.Verbose.Value())
+//  	clis.Verbose(2, "<%s> -\n  %+v\n  %+v\n  %v\n", ctx.Path(), rootArgv, argv, ctx.Args())
 //  	Opts.DNSServer, Opts.Port, Opts.Retires, Opts.Verbose, Opts.Verbose =
 //  		rootArgv.DNSServer, rootArgv.Port, rootArgv.Retires, rootArgv.Verbose, rootArgv.Verbose.Value()
+//  	//return nil
+//  	return DoResolve()
+//  }
+//
+// DoResolve implements the business logic of command `resolve`
+//  func DoResolve() error {
+//  	fmt.Fprintf(os.Stderr, "%s v%s. resolve - Resolve from given domain list to IP\n", progname, version)
+//  	fmt.Fprintln(os.Stderr, "Copyright (C) 2019, Tong Sun\n")
 //  	return nil
 //  }
 
@@ -124,9 +138,18 @@ var resolveDef = &cli.Command{
 //  func probeCLI(ctx *cli.Context) error {
 //  	rootArgv = ctx.RootArgv().(*rootT)
 //  	argv := ctx.Argv().(*probeT)
-//  	fmt.Printf("[probe]:\n  %+v\n  %+v\n  %v\n", rootArgv, argv, ctx.Args())
+//  	clis.Setup(progname, rootArgv.Verbose.Value())
+//  	clis.Verbose(2, "<%s> -\n  %+v\n  %+v\n  %v\n", ctx.Path(), rootArgv, argv, ctx.Args())
 //  	Opts.DNSServer, Opts.Port, Opts.Retires, Opts.Verbose, Opts.Verbose =
 //  		rootArgv.DNSServer, rootArgv.Port, rootArgv.Retires, rootArgv.Verbose, rootArgv.Verbose.Value()
+//  	//return nil
+//  	return DoProbe()
+//  }
+//
+// DoProbe implements the business logic of command `probe`
+//  func DoProbe() error {
+//  	fmt.Fprintf(os.Stderr, "%s v%s. probe - Probe the given domain set to IP\n", progname, version)
+//  	fmt.Fprintln(os.Stderr, "Copyright (C) 2019, Tong Sun\n")
 //  	return nil
 //  }
 
@@ -142,6 +165,45 @@ var probeDef = &cli.Command{
 	Text: "Usage:\n  dnstools probe DOMAIN_SET",
 	Argv: func() interface{} { return new(probeT) },
 	Fn:   probeCLI,
+
+	NumArg:      cli.AtLeast(1),
+	CanSubRoute: true,
+}
+
+////////////////////////////////////////////////////////////////////////////
+// tcping
+
+//  func tcpingCLI(ctx *cli.Context) error {
+//  	rootArgv = ctx.RootArgv().(*rootT)
+//  	argv := ctx.Argv().(*tcpingT)
+//  	clis.Setup(progname, rootArgv.Verbose.Value())
+//  	clis.Verbose(2, "<%s> -\n  %+v\n  %+v\n  %v\n", ctx.Path(), rootArgv, argv, ctx.Args())
+//  	Opts.DNSServer, Opts.Port, Opts.Retires, Opts.Verbose, Opts.Verbose =
+//  		rootArgv.DNSServer, rootArgv.Port, rootArgv.Retires, rootArgv.Verbose, rootArgv.Verbose.Value()
+//  	//return nil
+//  	return DoTcping()
+//  }
+//
+// DoTcping implements the business logic of command `tcping`
+//  func DoTcping() error {
+//  	fmt.Fprintf(os.Stderr, "%s v%s. tcping - Ping over tcp\n", progname, version)
+//  	fmt.Fprintln(os.Stderr, "Copyright (C) 2019, Tong Sun\n")
+//  	return nil
+//  }
+
+type tcpingT struct {
+	Counter   int    `cli:"c,counter" usage:"ping counter" dft:"3"`
+	Timeout   string `cli:"T,timeout" usage:"connect timeout, units are 'ms', 's'" dft:"3s"`
+	Interval  string `cli:"I,interval" usage:"ping interval, units are 'ms', 's'" dft:"2s"`
+	DnsServer string `cli:"dns" usage:"Use the specified dns resolve server"`
+}
+
+var tcpingDef = &cli.Command{
+	Name: "tcping",
+	Desc: "Ping over tcp",
+	Text: "Usage:\n  dnstools tcping domain_name/IP [port]",
+	Argv: func() interface{} { return new(tcpingT) },
+	Fn:   tcpingCLI,
 
 	NumArg:      cli.AtLeast(1),
 	CanSubRoute: true,

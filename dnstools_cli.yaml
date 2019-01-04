@@ -1,5 +1,6 @@
 # program name, name for the executable
 ProgramName: dnstools
+Authors: Tong Sun
 
 PackageName: main
 
@@ -75,4 +76,35 @@ Command:
         Flag: stop
         Usage: stop probing after this many errors
         Value: 3
+
+  - Name: tcping
+    Desc: Ping over tcp
+    Text: 'Usage:\n  dnstools tcping domain_name/IP [port]'
+    NumArg: cli.AtLeast(1)
+    #NumOption: cli.AtLeast(1)
+
+    Options:
+
+      - Name: Counter
+        Type: int
+        Flag: c,counter
+        Usage: ping counter
+        Value: 3
+
+      - Name: Timeout
+        Type: string
+        Flag: T,timeout
+        Usage: connect timeout, units are 'ms', 's'
+        Value: 3s
+
+      - Name: Interval
+        Type: string
+        Flag: I,interval
+        Usage: ping interval, units are 'ms', 's'
+        Value: 2s
+
+      - Name: DnsServer
+        Type: string
+        Flag: dns
+        Usage: Use the specified dns resolve server
 

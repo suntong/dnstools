@@ -55,7 +55,8 @@ func main() {
 	// default writer is os.Stdout
 	if err := cli.Root(root,
 		cli.Tree(resolveDef),
-		cli.Tree(probeDef)).Run(os.Args[1:]); err != nil {
+		cli.Tree(probeDef),
+		cli.Tree(tcpingDef)).Run(os.Args[1:]); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
 	fmt.Println("")
